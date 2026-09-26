@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.activity.ComponentActivity
@@ -54,17 +55,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun CalculateSquareByEdgeHeight(edge: Double, height: Double) = edge * height
+fun CalculateSquareByEdgeHeight(edge: Float, height: Float) = edge * height
 
-fun CalculateSquareDiagonal(firstDiagonal: Double,
-                            secondDiagonal: Double) =
+fun CalculateSquareDiagonal(firstDiagonal: Float,
+                            secondDiagonal: Float) =
     (firstDiagonal * secondDiagonal) / 2
 
 
 
 @Composable
 fun GeneralFormCalcSquareRomb(name: String, modifier: Modifier = Modifier) {
-    var currentValueSquare: Double? = null;
+    var currentValueSquare by remember{mutableFloatStateOf(0f)}
     //var selectedMethod: Number = 0;
 
     var selectedMethod by remember{mutableStateOf(1)}
@@ -107,6 +108,13 @@ fun GeneralFormCalcSquareRomb(name: String, modifier: Modifier = Modifier) {
             })
         }
 
+        Button(onClick={currentValueSquare =
+            CalculateSquare(selectedMethod,
+                            currentEdge,
+                            currentHeight,
+                            currentFirstDiagonal,
+                            currentSecondDiagonal)})
+
     }
 }
 
@@ -122,21 +130,43 @@ fun FormInputEdgeHeight(onChangeEdgeHeight: (edge: Float,
         {
             Text(" Высота: ")
 
-            TextField(value = localHeight.value.toString(),
-                onValueChange = {
-                    localHeight.value = it.toFloat()
-                    onChangeEdgeHeight(localEdge.value.toFloat(), it.toFloat())
-                })
+            TextField(
+                value = localHeight.value.toString(),
+                onValueChange = { newText ->
+                    if (newText.isEmpty() || newText.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                        val newValue = newText.toFloatOrNull() ?: 0f
+                        localHeight.value = newValue
+                        onChangeEdgeHeight(localEdge.value, newValue)
+                    }
+                },
+                modifier = Modifier
+                    .width(110.dp)
+                    .height(48.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            )
         }
         Row(verticalAlignment = Alignment.CenterVertically)
         {
             Text("Сторона: ")
 
-            TextField(value = localEdge.value.toString(),
-                onValueChange = {
-                    localEdge.value = it.toFloat()
-                    onChangeEdgeHeight(it.toFloat(), localHeight.value.toFloat())
-                })
+            TextField(
+                value = localEdge.value.toString(),
+                onValueChange = { newText ->
+                    if (newText.isEmpty() || newText.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                        val newValue = newText.toFloatOrNull() ?: 0f
+                        localEdge.value = newValue
+                        onChangeEdgeHeight(newValue, localHeight.value)
+                    }
+                },
+                modifier = Modifier
+                    .width(110.dp)
+                    .height(48.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            )
         }
     }
 }
@@ -190,6 +220,17 @@ fun FormInputDiagonals(onChangeDiagonals: (firstDiagonal: Float,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
         }
+    }
+}
+
+fun CalculateSquare (selectedMethod: Number,
+                     edge: Float,
+                     height: Float,
+                     firstDiagonal: Float,
+                     secondDiagonal: Float): Float {
+    if (selectedMethod == 1) return CalculateSquareByEdgeHeight(edge, height)
+    else {
+        return CalculateSquareDiagonal(firstDiagonal, secondDiagonal)
     }
 }
 
