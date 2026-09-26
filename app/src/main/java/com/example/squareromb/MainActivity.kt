@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 import android.os.Bundle
-import android.widget.Button
+import androidx.compose.material3.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.activity.ComponentActivity
@@ -113,7 +113,15 @@ fun GeneralFormCalcSquareRomb(name: String, modifier: Modifier = Modifier) {
                             currentEdge,
                             currentHeight,
                             currentFirstDiagonal,
-                            currentSecondDiagonal)})
+                            currentSecondDiagonal)}){
+            Text("Рассчитать")
+        }
+
+        if (currentValueSquare != 0f){
+            Text(
+                "Рассчитанная площадь ${currentValueSquare}"
+            )
+        }
 
     }
 }
@@ -141,7 +149,7 @@ fun FormInputEdgeHeight(onChangeEdgeHeight: (edge: Float,
                 },
                 modifier = Modifier
                     .width(110.dp)
-                    .height(48.dp),
+                    .height(68.dp),
                 textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -162,7 +170,7 @@ fun FormInputEdgeHeight(onChangeEdgeHeight: (edge: Float,
                 },
                 modifier = Modifier
                     .width(110.dp)
-                    .height(48.dp),
+                    .height(68.dp),
                 textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -194,7 +202,7 @@ fun FormInputDiagonals(onChangeDiagonals: (firstDiagonal: Float,
                 },
                 modifier = Modifier
                     .width(110.dp)
-                    .height(48.dp),
+                    .height(68.dp),
                 textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -214,7 +222,7 @@ fun FormInputDiagonals(onChangeDiagonals: (firstDiagonal: Float,
                 },
                 modifier = Modifier
                     .width(110.dp)
-                    .height(48.dp),
+                    .height(68.dp),
                 textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -223,7 +231,7 @@ fun FormInputDiagonals(onChangeDiagonals: (firstDiagonal: Float,
     }
 }
 
-fun CalculateSquare (selectedMethod: Number,
+fun CalculateSquare (selectedMethod: Int,
                      edge: Float,
                      height: Float,
                      firstDiagonal: Float,
