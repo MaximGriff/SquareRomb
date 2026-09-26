@@ -30,6 +30,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+fun CalculateSquareByEdgeHeight(edge: Double, height: Double) = edge * height
+
 @Composable
 fun GeneralFormCalcSquareRomb(name: String, modifier: Modifier = Modifier) {
     Text(
