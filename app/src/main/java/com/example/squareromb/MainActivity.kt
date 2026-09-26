@@ -15,7 +15,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,7 +31,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.squareromb.ui.theme.SquareRombTheme
 
 class MainActivity : ComponentActivity() {
@@ -88,9 +95,18 @@ fun GeneralFormCalcSquareRomb(name: String, modifier: Modifier = Modifier) {
             )
             Text(text = "По диагоналям")
         }
-        FormInputEdgeHeight(onChangeEdgeHeight = {edge, height ->
-            currentEdge = edge
-            currentHeight = height})
+        if (selectedMethod == 1){
+            FormInputEdgeHeight(onChangeEdgeHeight = {edge, height ->
+                currentEdge = edge
+                currentHeight = height})
+        }
+        else {
+            FormInputDiagonals(onChangeDiagonals = {firstDiagonal, secondDiagonal ->
+                currentFirstDiagonal = firstDiagonal
+                currentSecondDiagonal = secondDiagonal
+            })
+        }
+
     }
 }
 
@@ -116,11 +132,63 @@ fun FormInputEdgeHeight(onChangeEdgeHeight: (edge: Float,
         {
             Text("Сторона: ")
 
-            TextField(value = localHeight.value.toString(),
+            TextField(value = localEdge.value.toString(),
                 onValueChange = {
                     localEdge.value = it.toFloat()
                     onChangeEdgeHeight(it.toFloat(), localHeight.value.toFloat())
                 })
+        }
+    }
+}
+
+@Composable
+fun FormInputDiagonals(onChangeDiagonals: (firstDiagonal: Float,
+                                             secondDiagonal: Float) -> Unit){
+    var localFirstDiagonal = remember { mutableFloatStateOf(1f) };
+    var localSecondDiagonal= remember { mutableFloatStateOf(1f) };
+
+    Column()
+    {
+        Row(verticalAlignment = Alignment.CenterVertically)
+        {
+            Text(" Первая диагональ: ")
+
+            TextField(
+                value = localFirstDiagonal.value.toString(),
+                onValueChange = { newText ->
+                    if (newText.isEmpty() || newText.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                        val newValue = newText.toFloatOrNull() ?: 0f
+                        localFirstDiagonal.value = newValue
+                        onChangeDiagonals(newValue, localSecondDiagonal.value)
+                    }
+                },
+                modifier = Modifier
+                    .width(110.dp)
+                    .height(48.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically)
+        {
+            Text("Вторая диагональ: ")
+
+            TextField(value = localSecondDiagonal.value.toString(),
+                onValueChange = { newText ->
+                    if (newText.isEmpty() || newText.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                        val newValue = newText.toFloatOrNull() ?: 0f
+                        localSecondDiagonal.value = newValue
+                        onChangeDiagonals(newValue, localSecondDiagonal.value)
+                    }
+                },
+                modifier = Modifier
+                    .width(110.dp)
+                    .height(48.dp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            )
         }
     }
 }
